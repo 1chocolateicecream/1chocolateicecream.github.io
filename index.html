@@ -27,11 +27,11 @@
             font-size: 16px;
             width: 300px;
             height: 100px;
-            background: rgba(0, 0, 0, 0.5); /* Тёмный фон для контраста */
-            color: white; /* Белый текст для лучшей читаемости */
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
         }
         textarea::placeholder {
-            color: rgba(200, 200, 200, 0.9); /* Чуть ярче placeholder */
+            color: rgba(200, 200, 200, 0.9);
         }
         button {
             margin: 5px;
@@ -40,12 +40,12 @@
             border-radius: 13px;
             font-size: 16px;
             cursor: pointer;
-            background-color: #B49FD9; /* Нежно-сиреневый цвет */
+            background-color: #B49FD9;
             color: white;
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
         button:hover {
-            background-color: #8F77B5; /* Чуть более тёмный сиреневый */
+            background-color: #8F77B5;
             transform: scale(1.05);
         }
         button:active {
@@ -72,11 +72,10 @@
 
     <!-- Элемент <audio> для звука -->
     <audio id="secretSound">
-        <source src="https://storage.sekai.best/sekai-jp-assets/sound/scenario/voice/event_99_02_rip/voice_ev_shuffle_33_02_02_16.mp3" type="audio/mpeg">
+        <source src="voice_ev_shuffle_33_02_02_16.wav" type="audio/wav">
     </audio>
 
     <script>
-        // JavaScript для обработки текста
         const inputText = document.getElementById('inputText');
         const outputText = document.getElementById('outputText');
         const convertButton = document.getElementById('convertButton');
@@ -84,7 +83,7 @@
         const clearButton = document.getElementById('clearButton');
         const secretSound = document.getElementById('secretSound');
 
-        let hoverTimeout; // Таймер для пасхалки
+        let hoverTimeout; 
 
         // Преобразование текста в строчный
         convertButton.addEventListener('click', () => {
@@ -115,7 +114,6 @@
         });
 
         // Пасхалка: проигрывание звука при наведении на кнопку "преобразовать"
-        // Для мобильных устройств используется событие touchstart (касание экрана)
         convertButton.addEventListener('mouseover', () => {
             hoverTimeout = setTimeout(() => {
                 secretSound.play(); // Проигрываем звук
@@ -138,28 +136,6 @@
         convertButton.addEventListener('touchend', () => {
             clearTimeout(hoverTimeout);
         });
-
-        let soundPlayed = false; // Чтобы звук не проигрывался несколько раз
-
-convertButton.addEventListener('mouseenter', () => {
-    if (!soundPlayed) {
-        const sound = new Audio('https://storage.sekai.best/sekai-jp-assets/sound/scenario/voice/event_99_02_rip/voice_ev_shuffle_33_02_02_16.mp3');
-        
-        // Проверка на ошибки загрузки
-        sound.onerror = function() {
-            console.error('Не удалось загрузить или воспроизвести звук!');
-        };
-        
-        // Попробуем воспроизвести звук
-        sound.play().catch(error => {
-            console.error('Ошибка воспроизведения звука: ', error);
-        });
-        
-        soundPlayed = true;
-    }
-});
-
-
     </script>
 </body>
 </html>
