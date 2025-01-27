@@ -27,11 +27,11 @@
             font-size: 16px;
             width: 300px;
             height: 100px;
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
+            background: rgba(0, 0, 0, 0.5); 
+            color: white; 
         }
         textarea::placeholder {
-            color: rgba(200, 200, 200, 0.9);
+            color: rgba(200, 200, 200, 0.9); 
         }
         button {
             margin: 5px;
@@ -84,12 +84,12 @@
         const secretSound = document.getElementById('secretSound');
 
         let hoverTimeout; 
+        let soundPlayed = false;  // Флаг для предотвращения двойного воспроизведения
 
         // Преобразование текста в строчный
         convertButton.addEventListener('click', () => {
             const lowerCaseText = inputText.value.toLowerCase();
             outputText.value = lowerCaseText;
-            secretSound.play(); // Проигрывание звука при первом клике
         });
 
         // Копирование результата в буфер обмена с изменением текста кнопки
@@ -97,11 +97,9 @@
             outputText.select();
             document.execCommand('copy');
 
-            // Меняем текст кнопки на "Скопировано!"
             const originalText = copyButton.textContent;
             copyButton.textContent = 'скопировано!';
 
-            // Через 5 секунд возвращаем обратно текст кнопки
             setTimeout(() => {
                 copyButton.textContent = originalText;
             }, 5000);
@@ -114,10 +112,14 @@
         });
 
         // Пасхалка: проигрывание звука при наведении на кнопку "преобразовать"
+        // Для мобильных устройств используется событие touchstart (касание экрана)
         convertButton.addEventListener('mouseover', () => {
-            hoverTimeout = setTimeout(() => {
-                secretSound.play(); // Проигрываем звук
-            }, 5000); // Ждём 5 секунд
+            if (!soundPlayed) {
+                hoverTimeout = setTimeout(() => {
+                    secretSound.play(); // Проигрываем звук
+                    soundPlayed = true; // Устанавливаем флаг, что звук проигран
+                }, 5000); // Ждём 5 секунд
+            }
         });
 
         // Останавливаем таймер, если курсор убрали до истечения 5 секунд
@@ -127,9 +129,12 @@
 
         // Для мобильных устройств (касание экрана на кнопке)
         convertButton.addEventListener('touchstart', () => {
-            hoverTimeout = setTimeout(() => {
-                secretSound.play(); // Проигрываем звук
-            }, 5000); // Ждём 5 секунд
+            if (!soundPlayed) {
+                hoverTimeout = setTimeout(() => {
+                    secretSound.play(); // Проигрываем звук
+                    soundPlayed = true; // Устанавливаем флаг
+                }, 5000); // Ждём 5 секунд
+            }
         });
 
         // Останавливаем таймер для мобильных устройств, если касание завершилось
