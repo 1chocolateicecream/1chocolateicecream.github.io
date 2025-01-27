@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,6 +59,11 @@
         .button-group {
             display: flex;
             gap: 10px;
+        }
+
+        /* Класс для кнопки при пасхалке */
+        .secret-active {
+            background-color: #BB88ED !important;
         }
     </style>
 </head>
@@ -121,7 +126,7 @@
                     secretSound.play(); // Проигрываем звук
                     soundPlayed = true; // Устанавливаем флаг, что звук проигран
                     // Меняем цвет кнопки
-                    convertButton.style.backgroundColor = '#BB88ED'; 
+                    convertButton.classList.add('secret-active'); 
                 }, 5000); // Ждём 5 секунд
             }
         });
@@ -130,7 +135,7 @@
         convertButton.addEventListener('mouseout', () => {
             clearTimeout(hoverTimeout);
             // Восстанавливаем цвет кнопки, если курсор ушел
-            convertButton.style.backgroundColor = '#B49FD9';
+            convertButton.classList.remove('secret-active');
         });
 
         // Для мобильных устройств (касание экрана на кнопке)
@@ -140,7 +145,7 @@
                     secretSound.play(); // Проигрываем звук
                     soundPlayed = true; // Устанавливаем флаг
                     // Меняем цвет кнопки
-                    convertButton.style.backgroundColor = '#BB88ED'; 
+                    convertButton.classList.add('secret-active'); 
                 }, 5000); // Ждём 5 секунд
             }
         });
@@ -149,12 +154,12 @@
         convertButton.addEventListener('touchend', () => {
             clearTimeout(hoverTimeout);
             // Восстанавливаем цвет кнопки
-            convertButton.style.backgroundColor = '#B49FD9';
+            convertButton.classList.remove('secret-active');
         });
 
         // Слушаем событие окончания воспроизведения звука, чтобы вернуть цвет кнопки
         secretSound.addEventListener('ended', () => {
-            convertButton.style.backgroundColor = '#8F77B5'; // Восстанавливаем исходный цвет
+            convertButton.classList.remove('secret-active'); // Восстанавливаем исходный цвет
         });
     </script>
 </body>
