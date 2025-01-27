@@ -91,7 +91,6 @@
         const secretSound = document.getElementById('secretSound');
 
         let hoverTimeout;
-        let soundPlayed = false;
 
         // Преобразование текста в строчный
         convertButton.addEventListener('click', () => {
@@ -120,34 +119,32 @@
 
         // Пасхалка: проигрывание звука при наведении на кнопку "преобразовать"
         convertButton.addEventListener('mouseover', () => {
-            // Сбрасываем флаг, чтобы каждый раз заново запускать звук
-            if (!soundPlayed) {
-                hoverTimeout = setTimeout(() => {
-                    secretSound.play(); // Проигрываем звук
-                    soundPlayed = true; // Устанавливаем флаг, что звук проигран
-                    // Меняем цвет кнопки
-                    convertButton.classList.add('secret-active'); 
-                }, 5000); // Ждём 5 секунд
-            }
+            // Каждый раз сбрасываем таймер перед новым наведением
+            clearTimeout(hoverTimeout);
+
+            hoverTimeout = setTimeout(() => {
+                secretSound.play(); // Проигрываем звук
+                // Меняем цвет кнопки
+                convertButton.classList.add('secret-active');
+            }, 5000); // Ждём 5 секунд
         });
 
         // Останавливаем таймер, если курсор убрали до истечения 5 секунд
         convertButton.addEventListener('mouseout', () => {
             clearTimeout(hoverTimeout);
-            // Восстанавливаем цвет кнопки, если курсор ушел
+            // Восстанавливаем цвет кнопки
             convertButton.classList.remove('secret-active');
         });
 
         // Для мобильных устройств (касание экрана на кнопке)
         convertButton.addEventListener('touchstart', () => {
-            if (!soundPlayed) {
-                hoverTimeout = setTimeout(() => {
-                    secretSound.play(); // Проигрываем звук
-                    soundPlayed = true; // Устанавливаем флаг
-                    // Меняем цвет кнопки
-                    convertButton.classList.add('secret-active'); 
-                }, 5000); // Ждём 5 секунд
-            }
+            clearTimeout(hoverTimeout);
+
+            hoverTimeout = setTimeout(() => {
+                secretSound.play(); // Проигрываем звук
+                // Меняем цвет кнопки
+                convertButton.classList.add('secret-active');
+            }, 5000); // Ждём 5 секунд
         });
 
         // Останавливаем таймер для мобильных устройств, если касание завершилось
