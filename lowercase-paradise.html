@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LCSS</title>
+    <style>
+        body {
+            font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('https://wallpapersok.com/images/hd/cute-aesthetic-pc-purple-clouds-dqnz6v7randcjzeu.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+        }
+        textarea {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 13px;
+            font-size: 16px;
+            width: 300px;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.5); /* Тёмный фон для контраста */
+            color: white; /* Белый текст для лучшей читаемости */
+        }
+        textarea::placeholder {
+            color: rgba(200, 200, 200, 0.9); /* Чуть ярче placeholder */
+        }
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 13px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #B49FD9; /* Нежно-сиреневый цвет */
+            color: white;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        button:hover {
+            background-color: #8F77B5; /* Чуть более тёмный сиреневый */
+            transform: scale(1.05);
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        h1 {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>↓ case save space</h1>
+    <textarea id="inputText" placeholder="введите текст..."></textarea>
+    <div class="button-group">
+        <button id="convertButton">преобразовать</button>
+        <button id="clearButton">очистить</button>
+    </div>
+    <textarea id="outputText" readonly placeholder="результат появится здесь"></textarea>
+    <button id="copyButton">скопировать</button>
+
+    <!-- Элемент <audio> для звука -->
+    <audio id="secretSound">
+        <source src="https://storage.sekai.best/sekai-jp-assets/sound/scenario/voice/event_99_02_rip/voice_ev_shuffle_33_02_02_16.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // JavaScript для обработки текста
+        const inputText = document.getElementById('inputText');
+        const outputText = document.getElementById('outputText');
+        const convertButton = document.getElementById('convertButton');
+        const copyButton = document.getElementById('copyButton');
+        const clearButton = document.getElementById('clearButton');
+        const secretSound = document.getElementById('secretSound');
+
+        let hoverTimeout; // Таймер для пасхалки
+
+        // Преобразование текста в строчный
+        convertButton.addEventListener('click', () => {
+            const lowerCaseText = inputText.value.toLowerCase();
+            outputText.value = lowerCaseText;
+            secretSound.play(); // Проигрывание звука при первом клике
+        });
+
+        // Копирование результата в буфер обмена с изменением текста кнопки
+        copyButton.addEventListener('click', () => {
+            outputText.select();
+            document.execCommand('copy');
+
+            // Меняем текст кнопки на "Скопировано!"
+            const originalText = copyButton.textContent;
+            copyButton.textContent = 'скопировано!';
+
+            // Через 5 секунд возвращаем обратно текст кнопки
+            setTimeout(() => {
+                copyButton.textContent = originalText;
+            }, 5000);
+        });
+
+        // Очистка текстовых полей
+        clearButton.addEventListener('click', () => {
+            inputText.value = '';
+            outputText.value = '';
+        });
+
+        // Пасхалка: проигрывание звука при наведении на кнопку "преобразовать"
+        // Для мобильных устройств используется событие touchstart (касание экрана)
+        convertButton.addEventListener('mouseover', () => {
+            hoverTimeout = setTimeout(() => {
+                secretSound.play(); // Проигрываем звук
+            }, 5000); // Ждём 5 секунд
+        });
+
+        // Останавливаем таймер, если курсор убрали до истечения 5 секунд
+        convertButton.addEventListener('mouseout', () => {
+            clearTimeout(hoverTimeout);
+        });
+
+        // Для мобильных устройств (касание экрана на кнопке)
+        convertButton.addEventListener('touchstart', () => {
+            hoverTimeout = setTimeout(() => {
+                secretSound.play(); // Проигрываем звук
+            }, 5000); // Ждём 5 секунд
+        });
+
+        // Останавливаем таймер для мобильных устройств, если касание завершилось
+        convertButton.addEventListener('touchend', () => {
+            clearTimeout(hoverTimeout);
+        });
+    </script>
+</body>
+</html>
