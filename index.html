@@ -123,6 +123,12 @@
             convertButton.classList.add('secret-active'); // Меняем цвет кнопки
         };
 
+        convertButton.addEventListener('click', () => {
+            clearTimeout(hoverTimeout);
+            // Проигрывание звука и изменение цвета при клике
+            playSoundAndChangeColor();
+        });
+
         convertButton.addEventListener('mouseover', () => {
             clearTimeout(hoverTimeout);
 
