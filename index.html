@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LCSS</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
-        <link rel="icon" href="favicon.ico" type="image/x-icon">
         body {
-            font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -115,7 +115,6 @@
         // Пасхалка: проигрывание звука при наведении на кнопку "преобразовать"
         convertButton.addEventListener('mouseover', () => {
             // Сбрасываем флаг, чтобы каждый раз заново запускать звук
-            soundPlayed = false;
             if (!soundPlayed) {
                 hoverTimeout = setTimeout(() => {
                     secretSound.play(); // Проигрываем звук
@@ -129,14 +128,12 @@
         // Останавливаем таймер, если курсор убрали до истечения 5 секунд
         convertButton.addEventListener('mouseout', () => {
             clearTimeout(hoverTimeout);
-            soundPlayed = false; // Сбрасываем флаг, чтобы повторно активировать пасхалку
             // Восстанавливаем цвет кнопки, если курсор ушел
             convertButton.style.backgroundColor = '#B49FD9';
         });
 
         // Для мобильных устройств (касание экрана на кнопке)
         convertButton.addEventListener('touchstart', () => {
-            soundPlayed = false; // Сбрасываем флаг для мобильных устройств
             if (!soundPlayed) {
                 hoverTimeout = setTimeout(() => {
                     secretSound.play(); // Проигрываем звук
@@ -150,7 +147,6 @@
         // Останавливаем таймер для мобильных устройств, если касание завершилось
         convertButton.addEventListener('touchend', () => {
             clearTimeout(hoverTimeout);
-            soundPlayed = false; // Сбрасываем флаг
             // Восстанавливаем цвет кнопки
             convertButton.style.backgroundColor = '#B49FD9';
         });
