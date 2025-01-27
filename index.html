@@ -83,8 +83,8 @@
         const clearButton = document.getElementById('clearButton');
         const secretSound = document.getElementById('secretSound');
 
-        let hoverTimeout; 
-        let soundPlayed = false;  // Флаг для предотвращения двойного воспроизведения
+        let hoverTimeout;
+        let soundPlayed = false;  
 
         // Преобразование текста в строчный
         convertButton.addEventListener('click', () => {
@@ -112,12 +112,13 @@
         });
 
         // Пасхалка: проигрывание звука при наведении на кнопку "преобразовать"
-        // Для мобильных устройств используется событие touchstart (касание экрана)
         convertButton.addEventListener('mouseover', () => {
             if (!soundPlayed) {
                 hoverTimeout = setTimeout(() => {
                     secretSound.play(); // Проигрываем звук
                     soundPlayed = true; // Устанавливаем флаг, что звук проигран
+                    // Меняем цвет кнопки
+                    convertButton.style.backgroundColor = '#BB88ED'; 
                 }, 5000); // Ждём 5 секунд
             }
         });
@@ -133,6 +134,8 @@
                 hoverTimeout = setTimeout(() => {
                     secretSound.play(); // Проигрываем звук
                     soundPlayed = true; // Устанавливаем флаг
+                    // Меняем цвет кнопки
+                    convertButton.style.backgroundColor = '#BB88ED'; 
                 }, 5000); // Ждём 5 секунд
             }
         });
@@ -140,6 +143,11 @@
         // Останавливаем таймер для мобильных устройств, если касание завершилось
         convertButton.addEventListener('touchend', () => {
             clearTimeout(hoverTimeout);
+        });
+
+        // Слушаем событие окончания воспроизведения звука, чтобы вернуть цвет кнопки
+        secretSound.addEventListener('ended', () => {
+            convertButton.style.backgroundColor = '#B49FD9'; // Восстанавливаем исходный цвет
         });
     </script>
 </body>
