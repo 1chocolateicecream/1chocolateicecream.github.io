@@ -144,10 +144,21 @@
 convertButton.addEventListener('mouseenter', () => {
     if (!soundPlayed) {
         const sound = new Audio('https://storage.sekai.best/sekai-jp-assets/sound/scenario/voice/event_99_02_rip/voice_ev_shuffle_33_02_02_16.mp3');
-        sound.play();
+        
+        // Проверка на ошибки загрузки
+        sound.onerror = function() {
+            console.error('Не удалось загрузить или воспроизвести звук!');
+        };
+        
+        // Попробуем воспроизвести звук
+        sound.play().catch(error => {
+            console.error('Ошибка воспроизведения звука: ', error);
+        });
+        
         soundPlayed = true;
     }
 });
+
 
     </script>
 </body>
