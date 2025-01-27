@@ -138,6 +138,17 @@
         convertButton.addEventListener('touchend', () => {
             clearTimeout(hoverTimeout);
         });
+
+        let soundPlayed = false; // Чтобы звук не проигрывался несколько раз
+
+convertButton.addEventListener('mouseenter', () => {
+    if (!soundPlayed) {
+        const sound = new Audio('https://storage.sekai.best/sekai-jp-assets/sound/scenario/voice/event_99_02_rip/voice_ev_shuffle_33_02_02_16.mp3');
+        sound.play();
+        soundPlayed = true;
+    }
+});
+
     </script>
 </body>
 </html>
