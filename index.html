@@ -45,7 +45,6 @@
             color: white;
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
-        /* Цвет кнопок при наведении */
         button:hover {
             background-color: #8F77B5;
             transform: scale(1.05);
@@ -60,8 +59,6 @@
             display: flex;
             gap: 10px;
         }
-
-        /* Класс для кнопки при пасхалке */
         .secret-active {
             background-color: #BB88ED !important;
         }
@@ -77,8 +74,7 @@
     <textarea id="outputText" readonly placeholder="результат появится здесь"></textarea>
     <button id="copyButton">скопировать</button>
 
-    <!-- Элемент <audio> для звука -->
-    <audio id="secretSound" preload="auto">
+    <audio id="secretSound" preload="auto" playsinline>
         <source src="voice_ev_shuffle_33_02_02_16.wav" type="audio/wav">
     </audio>
 
@@ -90,7 +86,10 @@
         const clearButton = document.getElementById('clearButton');
         const secretSound = document.getElementById('secretSound');
 
-        let hoverTimeout;
+        // Разрешаем воспроизведение звука после первого клика на странице
+        document.body.addEventListener('click', () => {
+            secretSound.play().catch(() => console.log('Пользователь должен взаимодействовать перед воспроизведением звука.'));
+        }, { once: true });
 
         // Преобразование текста в строчный
         convertButton.addEventListener('click', () => {
@@ -98,60 +97,29 @@
             outputText.value = lowerCaseText;
         });
 
-        // Копирование результата в буфер обмена с изменением текста кнопки
+        // Копирование результата
         copyButton.addEventListener('click', () => {
             outputText.select();
             document.execCommand('copy');
-
-            const originalText = copyButton.textContent;
             copyButton.textContent = 'скопировано!';
-
             setTimeout(() => {
-                copyButton.textContent = originalText;
+                copyButton.textContent = 'скопировать';
             }, 5000);
         });
 
-        // Очистка текстовых полей
+        // Очистка полей
         clearButton.addEventListener('click', () => {
             inputText.value = '';
             outputText.value = '';
         });
 
-        // Пасхалка: проигрывание звука при наведении на кнопку "преобразовать"
-        const playSoundAndChangeColor = () => {
-            secretSound.play(); // Проигрываем звук
-            convertButton.classList.add('secret-active'); // Меняем цвет кнопки
-        };
-
-        // Для мобильных устройств (касание экрана на кнопке)
-        convertButton.addEventListener('touchstart', () => {
-            clearTimeout(hoverTimeout);
-            hoverTimeout = setTimeout(playSoundAndChangeColor, 5000); // Ждем 5 секунд
+        // Пасхалка - проигрывание звука по клику (работает на мобильных устройствах)
+        convertButton.addEventListener('click', () => {
+            secretSound.play().catch(error => console.log('Ошибка воспроизведения:', error));
+            convertButton.classList.add('secret-active');
         });
 
-        // Останавливаем таймер для мобильных устройств, если касание завершилось
-        convertButton.addEventListener('touchend', () => {
-            clearTimeout(hoverTimeout);
-            convertButton.classList.remove('secret-active');
-        });
-
-        // Для десктопа — обработка наведения и задержки
-        convertButton.addEventListener('mouseover', () => {
-            clearTimeout(hoverTimeout);
-            hoverTimeout = setTimeout(playSoundAndChangeColor, 5000); // Ждем 5 секунд
-        });
-
-        convertButton.addEventListener('mouseout', () => {
-            clearTimeout(hoverTimeout);
-            convertButton.classList.remove('secret-active');
-        });
-
-        // Используем событие touchmove для мобильных устройств
-        convertButton.addEventListener('touchmove', () => {
-            clearTimeout(hoverTimeout); // Если движение пальца, сбрасываем таймер
-        });
-
-        // Слушаем событие окончания воспроизведения звука, чтобы вернуть цвет кнопки
+        // Сброс цвета кнопки после окончания звука
         secretSound.addEventListener('ended', () => {
             convertButton.classList.remove('secret-active');
         });
