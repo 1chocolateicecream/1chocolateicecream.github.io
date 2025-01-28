@@ -85,6 +85,7 @@
         const copyButton = document.getElementById('copyButton');
         const clearButton = document.getElementById('clearButton');
         const secretSound = document.getElementById('secretSound');
+        let hoverTimeout;
 
         // Разрешаем воспроизведение звука после первого клика на странице
         document.body.addEventListener('click', () => {
@@ -113,13 +114,36 @@
             outputText.value = '';
         });
 
-        // Пасхалка - проигрывание звука по клику (работает на мобильных устройствах)
-        convertButton.addEventListener('click', () => {
+        // Пасхалка: срабатывает через 5 секунд удержания/наведения
+        const playSoundAndChangeColor = () => {
             secretSound.play().catch(error => console.log('Ошибка воспроизведения:', error));
             convertButton.classList.add('secret-active');
+        };
+
+        convertButton.addEventListener('mouseover', () => {
+            clearTimeout(hoverTimeout);
+            hoverTimeout = setTimeout(playSoundAndChangeColor, 5000);
         });
 
-        // Сброс цвета кнопки после окончания звука
+        convertButton.addEventListener('mouseout', () => {
+            clearTimeout(hoverTimeout);
+            convertButton.classList.remove('secret-active');
+        });
+
+        convertButton.addEventListener('touchstart', () => {
+            clearTimeout(hoverTimeout);
+            hoverTimeout = setTimeout(playSoundAndChangeColor, 5000);
+        });
+
+        convertButton.addEventListener('touchend', () => {
+            clearTimeout(hoverTimeout);
+            convertButton.classList.remove('secret-active');
+        });
+
+        convertButton.addEventListener('touchmove', () => {
+            clearTimeout(hoverTimeout);
+        });
+
         secretSound.addEventListener('ended', () => {
             convertButton.classList.remove('secret-active');
         });
