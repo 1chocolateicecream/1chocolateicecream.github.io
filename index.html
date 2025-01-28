@@ -123,31 +123,27 @@
             convertButton.classList.add('secret-active'); // Меняем цвет кнопки
         };
 
-        convertButton.addEventListener('click', () => {
-            clearTimeout(hoverTimeout);
-            // Проигрывание звука и изменение цвета при клике
-            playSoundAndChangeColor();
-        });
-
-        convertButton.addEventListener('mouseover', () => {
+        // Обработчик для нажатия и удержания
+        convertButton.addEventListener('touchstart', () => {
             clearTimeout(hoverTimeout);
 
-            hoverTimeout = setTimeout(playSoundAndChangeColor, 5000); // Ждём 5 секунд
+            hoverTimeout = setTimeout(playSoundAndChangeColor, 5000); // Ждем 5 секунд
         });
 
-        convertButton.addEventListener('mouseout', () => {
+        // Обработчик для отпуска кнопки (на мобильных)
+        convertButton.addEventListener('touchend', () => {
             clearTimeout(hoverTimeout);
             convertButton.classList.remove('secret-active');
         });
 
-        // Для мобильных устройств (касание экрана на кнопке)
-        convertButton.addEventListener('touchstart', () => {
+        // Для десктопа — обработка наведения и задержки
+        convertButton.addEventListener('mouseover', () => {
             clearTimeout(hoverTimeout);
 
-            hoverTimeout = setTimeout(playSoundAndChangeColor, 5000); // Ждём 5 секунд
+            hoverTimeout = setTimeout(playSoundAndChangeColor, 5000); // Ждем 5 секунд
         });
 
-        convertButton.addEventListener('touchend', () => {
+        convertButton.addEventListener('mouseout', () => {
             clearTimeout(hoverTimeout);
             convertButton.classList.remove('secret-active');
         });
