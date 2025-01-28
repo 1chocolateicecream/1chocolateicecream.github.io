@@ -88,7 +88,7 @@
     <button id="copyButton">скопировать</button>
 
     <!-- Контроллер для звука -->
-    <img id="soundControl" src="rui_sound-off.png" alt="Sound Control" />
+    <img id="soundControl" src="rui_sound-off.PNG" alt="Sound Control" />
 
     <audio id="secretSound" preload="auto" playsinline>
         <source src="voice_ev_shuffle_33_02_02_16.wav" type="audio/wav">
@@ -106,7 +106,7 @@
         let hoverTimeout;
         let audioUnlocked = false;
         let audioEnabled = true; // Статус звука
-        let soundControlIcon = 'rui_sound-off.png'; // Иконка звука
+        let soundControlIcon = 'rui_sound-off.PNG'; // Иконка звука
 
         // Разрешаем аудиоконтекст без автозапуска звука
         document.body.addEventListener('click', () => {
@@ -210,14 +210,14 @@
             audioEnabled = !audioEnabled; // Переключение состояния звука
 
             secretSound.muted = !audioEnabled; // Включаем/выключаем звук
-            soundControlIcon = audioEnabled ? 'rui_sound-on.png' : 'rui_sound-off.png'; // Меняем иконку
+            soundControlIcon = audioEnabled ? 'rui_sound-on.PNG' : 'rui_sound-off.PNG'; // Меняем иконку
             soundControl.src = soundControlIcon; // Обновляем иконку
         });
 
         // Изначально звук выключен
         document.addEventListener('DOMContentLoaded', () => {
             secretSound.muted = true;
-            soundControl.src = 'rui_sound-off.png'; // Иконка с перечёркнутым динамиком
+            soundControl.src = 'rui_sound-off.PNG'; // Иконка с перечёркнутым динамиком
         });
     </script>
 </body>
