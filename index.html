@@ -123,14 +123,13 @@
             convertButton.classList.add('secret-active'); // Меняем цвет кнопки
         };
 
-        // Обработчик для нажатия и удержания
+        // Для мобильных устройств (касание экрана на кнопке)
         convertButton.addEventListener('touchstart', () => {
             clearTimeout(hoverTimeout);
-
             hoverTimeout = setTimeout(playSoundAndChangeColor, 5000); // Ждем 5 секунд
         });
 
-        // Обработчик для отпуска кнопки (на мобильных)
+        // Останавливаем таймер для мобильных устройств, если касание завершилось
         convertButton.addEventListener('touchend', () => {
             clearTimeout(hoverTimeout);
             convertButton.classList.remove('secret-active');
@@ -139,7 +138,6 @@
         // Для десктопа — обработка наведения и задержки
         convertButton.addEventListener('mouseover', () => {
             clearTimeout(hoverTimeout);
-
             hoverTimeout = setTimeout(playSoundAndChangeColor, 5000); // Ждем 5 секунд
         });
 
