@@ -146,6 +146,11 @@
             convertButton.classList.remove('secret-active');
         });
 
+        // Используем событие touchmove для мобильных устройств
+        convertButton.addEventListener('touchmove', () => {
+            clearTimeout(hoverTimeout); // Если движение пальца, сбрасываем таймер
+        });
+
         // Слушаем событие окончания воспроизведения звука, чтобы вернуть цвет кнопки
         secretSound.addEventListener('ended', () => {
             convertButton.classList.remove('secret-active');
