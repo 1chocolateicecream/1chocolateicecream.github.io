@@ -70,7 +70,11 @@ h1 {
 
 .button-group {
     display: flex;
-    gap: 10px;
+    gap: 10px; /* Расстояние между кнопками */
+    padding: 0 20px; /* Отступы слева и справа внутри контейнера */
+    box-sizing: border-box; /* Учитывает отступы в размере контейнера */
+    width: 100%; /* Чтобы растягивался по ширине экрана */
+    justify-content: center; /* Центровка кнопок */
 }
 
 .secret-active {
@@ -82,9 +86,9 @@ h1 {
     <h1>↓ case save space</h1>
     <textarea id="inputText" placeholder="введите текст..."></textarea>
     <div class="button-group">
+        <button id="pasteButton">вставить</button>
         <button id="convertButton">преобразовать</button>
         <button id="clearButton">очистить</button>
-        <button id="pasteButton">вставить</button>
     </div>
     <textarea id="outputText" readonly placeholder="результат появится здесь"></textarea>
     <button id="copyButton">скопировать</button>
