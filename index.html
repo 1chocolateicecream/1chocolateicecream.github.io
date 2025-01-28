@@ -86,10 +86,17 @@
         const clearButton = document.getElementById('clearButton');
         const secretSound = document.getElementById('secretSound');
         let hoverTimeout;
+        let audioUnlocked = false;
 
-        // Разрешаем воспроизведение звука после первого клика на странице
+        // Разрешаем аудиоконтекст без автозапуска звука
         document.body.addEventListener('click', () => {
-            secretSound.play().catch(() => console.log('Пользователь должен взаимодействовать перед воспроизведением звука.'));
+            if (!audioUnlocked) {
+                secretSound.play().then(() => {
+                    secretSound.pause();
+                    secretSound.currentTime = 0;
+                    audioUnlocked = true;
+                }).catch(() => console.log('Аудио разблокировано для дальнейшего воспроизведения.'));
+            }
         }, { once: true });
 
         // Преобразование текста в строчный
