@@ -6,62 +6,76 @@
     <title>LCSS</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
-        body {
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background-image: url('https://wallpapersok.com/images/hd/cute-aesthetic-pc-purple-clouds-dqnz6v7randcjzeu.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: white;
-        }
-        textarea {
-            margin: 10px 0;
-            padding: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            border-radius: 13px;
-            font-size: 16px;
-            width: 300px;
-            height: 100px;
-            background: rgba(0, 0, 0, 0.5); 
-            color: white; 
-        }
-        textarea::placeholder {
-            color: rgba(200, 200, 200, 0.9); 
-        }
-        button {
-            margin: 5px;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 13px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #B49FD9;
-            color: white;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        button:hover {
-            background-color: #8F77B5;
-            transform: scale(1.05);
-        }
-        button:active {
-            transform: scale(0.95);
-        }
-        h1 {
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-        }
-        .button-group {
-            display: flex;
-            gap: 10px;
-        }
-        .secret-active {
-            background-color: #BB88ED !important;
-        }
+        :root {
+    --primary-color: #B49FD9; /* Основной цвет кнопок */
+    --hover-color: #8F77B5;   /* Цвет кнопок при наведении */
+    --text-color: white;      /* Цвет текста */
+}
+
+body {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background-image: url('https://wallpapersok.com/images/hd/cute-aesthetic-pc-purple-clouds-dqnz6v7randcjzeu.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: var(--text-color);
+}
+
+textarea {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 13px;
+    font-size: 16px;
+    width: 300px;
+    height: 100px;
+    background: rgba(0, 0, 0, 0.5); 
+    color: white; 
+}
+
+textarea::placeholder {
+    color: rgba(200, 200, 200, 0.9); 
+}
+
+button {
+    margin: 5px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 13px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: var(--hover-color);
+    transform: scale(1.05);
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+h1 {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+
+.secret-active {
+    background-color: #BB88ED !important;
+}
     </style>
 </head>
 <body>
@@ -70,6 +84,7 @@
     <div class="button-group">
         <button id="convertButton">преобразовать</button>
         <button id="clearButton">очистить</button>
+        <button id="pasteButton">вставить</button>
     </div>
     <textarea id="outputText" readonly placeholder="результат появится здесь"></textarea>
     <button id="copyButton">скопировать</button>
@@ -84,6 +99,7 @@
         const convertButton = document.getElementById('convertButton');
         const copyButton = document.getElementById('copyButton');
         const clearButton = document.getElementById('clearButton');
+        const pasteButton = document.getElementById('pasteButton');
         const secretSound = document.getElementById('secretSound');
         let hoverTimeout;
         let audioUnlocked = false;
@@ -101,18 +117,25 @@
 
         // Преобразование текста в строчный
         convertButton.addEventListener('click', () => {
+            if (!inputText.value.trim()) {
+                alert('Введите текст для преобразования!');
+                return;
+            }
             const lowerCaseText = inputText.value.toLowerCase();
             outputText.value = lowerCaseText;
         });
 
         // Копирование результата
-        copyButton.addEventListener('click', () => {
-            outputText.select();
-            document.execCommand('copy');
-            copyButton.textContent = 'скопировано!';
-            setTimeout(() => {
-                copyButton.textContent = 'скопировать';
-            }, 5000);
+        copyButton.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(outputText.value);
+                copyButton.textContent = 'скопировано!';
+                setTimeout(() => {
+                    copyButton.textContent = 'скопировать';
+                }, 5000);
+            } catch (err) {
+                console.error('Не удалось скопировать текст: ', err);
+            }
         });
 
         // Очистка полей
@@ -120,6 +143,22 @@
             inputText.value = '';
             outputText.value = '';
         });
+
+        // Вставка текста из буфера обмена
+        pasteButton.addEventListener('click', async () => {
+            try {
+                const text = await navigator.clipboard.readText();
+                inputText.value = text;
+            } catch (err) {
+                console.error('Ошибка при вставке текста:', err);
+                alert('Не удалось вставить текст. Возможно, доступ к буферу обмена запрещён.');
+            }
+        });
+
+        // Проверка поддержки Clipboard API
+        if (!navigator.clipboard || !navigator.clipboard.readText) {
+            pasteButton.style.display = 'none'; // Скрываем кнопку, если Clipboard API недоступен
+        }
 
         // Пасхалка: срабатывает через 5 секунд удержания/наведения
         const playSoundAndChangeColor = () => {
