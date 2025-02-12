@@ -15,9 +15,9 @@
             height: 100vh;
             margin: 0;
             background-image: url('https://wallpapersok.com/images/hd/cute-aesthetic-pc-purple-clouds-dqnz6v7randcjzeu.jpg');
+            background-attachment: scroll; /* Убираем "залипание" */
             background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background-position: center center;
             color: white;
         }
         textarea {
@@ -74,6 +74,11 @@
             width: 30px;
             height: 30px;
         }
+        html, body {
+            height: 100%;
+            overflow: hidden;
+}
+
     </style>
 </head>
 <body>
