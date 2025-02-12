@@ -219,6 +219,33 @@
             secretSound.muted = true;
             soundControl.src = 'rui_sound-off.PNG'; // Иконка с перечёркнутым динамиком
         });
+
+        let clickCount = 0;
+        let capsMode = false;
+
+convertButton.addEventListener('click', () => {
+    clickCount++;
+
+    if (capsMode) {
+        // Если режим капса активен, переводим в верхний регистр
+        outputText.value = inputText.value.toUpperCase();
+        capsMode = false; // Выключаем капс-режим после одного использования
+        convertButton.textContent = "преобразовать"; // Возвращаем кнопку в обычный вид
+        convertButton.classList.remove("secret-active");
+        clickCount = 0; // Сбрасываем счётчик
+    } else {
+        // Обычное преобразование в нижний регистр
+        outputText.value = inputText.value.toLowerCase();
+
+        // Если нажали 5 раз — активируем пасхалку
+        if (clickCount >= 5) {
+            capsMode = true; // Включаем режим капса
+            convertButton.textContent = "ПРЕОБРАЗОВАТЬ";
+            convertButton.classList.add("secret-active"); // Меняем стиль
+        }
+    }
+});
+
     </script>
 </body>
 </html>
