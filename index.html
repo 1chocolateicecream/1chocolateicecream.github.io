@@ -174,83 +174,81 @@
             }
         });
 
-        // Пасхалка: срабатывает через 5 секунд удержания/наведения
-        const playSoundAndChangeColor = () => {
-            if (audioEnabled) {
-                playSecretSound();
-            }
-            convertButton.classList.add('secret-active');
-        };
-
-        convertButton.addEventListener('mouseover', () => {
-            clearTimeout(hoverTimeout);
-            hoverTimeout = setTimeout(playSoundAndChangeColor, 5000);
-        });
-
-        convertButton.addEventListener('mouseout', () => {
-            clearTimeout(hoverTimeout);
-            convertButton.classList.remove('secret-active');
-        });
-
-        convertButton.addEventListener('touchstart', () => {
-            clearTimeout(hoverTimeout);
-            hoverTimeout = setTimeout(playSoundAndChangeColor, 5000);
-        });
-
-        convertButton.addEventListener('touchend', () => {
-            clearTimeout(hoverTimeout);
-            convertButton.classList.remove('secret-active');
-        });
-
-        convertButton.addEventListener('touchmove', () => {
-            clearTimeout(hoverTimeout);
-        });
-
-        secretSound.addEventListener('ended', () => {
-            convertButton.classList.remove('secret-active');
-        });
-
-        // Логика для управления звуком
-        soundControl.addEventListener('click', () => {
-            audioEnabled = !audioEnabled; // Переключение состояния звука
-
-            secretSound.muted = !audioEnabled; // Включаем/выключаем звук
-            soundControlIcon = audioEnabled ? 'rui_sound-on.PNG' : 'rui_sound-off.PNG'; // Меняем иконку
-            soundControl.src = soundControlIcon; // Обновляем иконку
-        });
-
-        // Изначально звук выключен
-        document.addEventListener('DOMContentLoaded', () => {
-            secretSound.muted = true;
-            soundControl.src = 'rui_sound-off.PNG'; // Иконка с перечёркнутым динамиком
-        });
-
         let clickCount = 0;
-        let capsMode = false;
+let capsMode = false;
+let firstClickTime = null;
 
+// Пасхалка с капсом: 5 кликов за 6 секунд
 convertButton.addEventListener('click', () => {
+    const now = Date.now();
+
+    if (firstClickTime === null) {
+        firstClickTime = now; // Запоминаем время первого клика
+    }
+
+    if (now - firstClickTime > 6000) {
+        clickCount = 0; // Если прошло больше 6 секунд, сбрасываем
+        firstClickTime = now;
+    }
+
     clickCount++;
 
     if (capsMode) {
-        // Если режим капса активен, переводим в верхний регистр
         outputText.value = inputText.value.toUpperCase();
-        capsMode = false; // Выключаем капс-режим после одного использования
-        convertButton.textContent = "преобразовать"; // Возвращаем кнопку в обычный вид
+        capsMode = false;
+        convertButton.textContent = "преобразовать";
         convertButton.classList.remove("secret-active");
-        clickCount = 0; // Сбрасываем счётчик
+        clickCount = 0;
+        firstClickTime = null;
     } else {
-        // Обычное преобразование в нижний регистр
         outputText.value = inputText.value.toLowerCase();
 
-        // Если нажали 5 раз — активируем пасхалку
         if (clickCount >= 5) {
-            capsMode = true; // Включаем режим капса
+            capsMode = true;
             convertButton.textContent = "ПРЕОБРАЗОВАТЬ";
-            convertButton.classList.add("secret-active"); // Меняем стиль
+            convertButton.classList.add("secret-active");
         }
     }
 });
 
+// Пасхалка со звуком на телефонах и ПК
+const playSoundAndChangeColor = () => {
+    if (audioEnabled) {
+        playSecretSound();
+    }
+    convertButton.classList.add('secret-active');
+};
+
+// Для ПК (работает при наведении)
+convertButton.addEventListener('mouseover', () => {
+    clearTimeout(hoverTimeout);
+    hoverTimeout = setTimeout(playSoundAndChangeColor, 5000);
+}, { passive: true });  // Пассивный обработчик
+
+convertButton.addEventListener('mouseout', () => {
+    clearTimeout(hoverTimeout);
+    convertButton.classList.remove('secret-active');
+}, { passive: true });  // Пассивный обработчик
+
+// Для телефонов (работает при удерживании)
+convertButton.addEventListener('touchstart', () => {
+    clearTimeout(hoverTimeout);
+    hoverTimeout = setTimeout(playSoundAndChangeColor, 5000);
+}, { passive: true });  // Пассивный обработчик
+
+convertButton.addEventListener('touchend', () => {
+    clearTimeout(hoverTimeout);
+    convertButton.classList.remove('secret-active');
+}, { passive: true });  // Пассивный обработчик
+
+// Логика для управления звуком
+soundControl.addEventListener('click', () => {
+    audioEnabled = !audioEnabled; // Переключение состояния звука
+
+    secretSound.muted = !audioEnabled; // Включаем/выключаем звук
+    soundControlIcon = audioEnabled ? 'rui_sound-on.PNG' : 'rui_sound-off.PNG'; // Меняем иконку
+    soundControl.src = soundControlIcon; // Обновляем иконку
+});
     </script>
 </body>
 </html>
