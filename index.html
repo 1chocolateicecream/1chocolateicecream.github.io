@@ -67,13 +67,17 @@
             background-color: #BB88ED !important;
         }
         #soundControl {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            cursor: pointer;
-            width: 30px;
-            height: 30px;
-        }
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        cursor: pointer;
+        width: 30px;
+        height: 30px;
+    }
+    .moving {
+        transition: transform 0.3s ease-out;
+        position: relative;
+    }
         html, body {
             height: 100%;
             overflow: hidden;
@@ -249,6 +253,90 @@ soundControl.addEventListener('click', () => {
     soundControlIcon = audioEnabled ? 'rui_sound-on.PNG' : 'rui_sound-off.PNG'; // Меняем иконку
     soundControl.src = soundControlIcon; // Обновляем иконку
 });
+
+    const soundToggleButton = document.getElementById('soundControl'); // Картинка управления звуком
+    let isSoundOn = false; // Состояние звука
+    let moveAwayEnabled = false; // Включаем "убегание" кнопки только при `rui_sound-on.PNG`
+
+    // Добавим функцию "убегания" кнопки
+//     function addMovingEffect(button) {
+//     button.classList.add('moving');
+
+//     button.addEventListener('mousemove', (event) => {
+//         if (!moveAwayEnabled) return; // Проверяем, включено ли "убегание"
+
+//         const rect = button.getBoundingClientRect();
+//         const centerX = rect.left + rect.width / 3.5;
+//         const centerY = rect.top + rect.height / 3.5;
+
+//         const offsetX = event.clientX - centerX;
+//         const offsetY = event.clientY - centerY;
+
+//         const distance = Math.sqrt(offsetX ** 2 + offsetY ** 2); // Вычисляем расстояние до центра кнопки
+//         const maxDistance = 30; // Радиус начала "убегания" (примерно 0.7 см)
+
+//         if (distance < maxDistance) {
+//             // Чем ближе курсор, тем сильнее "убегание"
+//             const moveX = (offsetX / distance) * (maxDistance - distance) * -1.0;
+//             const moveY = (offsetY / distance) * (maxDistance - distance) * -1.0;
+
+//             button.style.transform = `translate(${moveX}px, ${moveY}px)`;
+//         } else {
+//             button.style.transform = 'translate(0, 0)';
+//         }
+//     });
+
+//     // Сбрасываем положение кнопки при уходе мыши
+//     button.addEventListener('mouseleave', () => {
+//         button.style.transform = 'translate(0, 0)';
+//     });
+// }
+function addMovingEffect(button) {
+    button.classList.add('moving');
+
+    document.addEventListener('mousemove', (event) => {
+        if (!moveAwayEnabled) return; // Проверяем, включено ли "убегание"
+
+        const rect = button.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        const offsetX = event.clientX - centerX;
+        const offsetY = event.clientY - centerY;
+
+        const distance = Math.sqrt(offsetX ** 2 + offsetY ** 2); // Реальное расстояние
+        const maxDistance = 55; // Радиус обнаружения курсора
+
+        if (distance < maxDistance) {
+            // Чем ближе курсор, тем дальше кнопка "убегает"
+            const moveFactor = (maxDistance - distance) / maxDistance;
+            const moveX = offsetX * -1.2 * moveFactor; // Увеличил "испуг"
+            const moveY = offsetY * -1.2 * moveFactor;
+
+            button.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        } else {
+            // Если курсор далеко, кнопка возвращается
+            button.style.transform = 'translate(0, 0)';
+        }
+    });
+
+    // Если курсор ушёл слишком далеко (например, за пределы окна)
+    document.addEventListener('mouseleave', () => {
+        button.style.transform = 'translate(0, 0)';
+    });
+}
+
+    // Применяем эффект к нужной кнопке (замени на свою кнопку)
+    const escapeButton = document.getElementById('soundControl');
+    addMovingEffect(escapeButton);
+
+    // Обработчик переключения звука
+    soundToggleButton.addEventListener('click', () => {
+        isSoundOn = !isSoundOn;
+        moveAwayEnabled = isSoundOn; // Включаем "убегание" только если звук включен
+
+        soundToggleButton.src = isSoundOn ? 'rui_sound-on.PNG' : 'rui_sound-off.PNG';
+    });
     </script>
 </body>
 </html>
