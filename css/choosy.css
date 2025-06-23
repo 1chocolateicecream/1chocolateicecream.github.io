@@ -1,0 +1,13 @@
+.rui-zone {
+    position: absolute;
+    left: 48%;
+}
+.result-zone {
+    position: absolute;
+    top: 29%;
+    right: 79%;
+    text-align: right;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    -webkit-text-stroke:1cap 1px rgba(179, 126, 126, 0.5);
+    color: black;
+}
