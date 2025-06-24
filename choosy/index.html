@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="ru">
+    <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Choosy</title>
@@ -9,26 +9,35 @@
     <link rel="stylesheet" href="/css/choosy.css">
 </head>
 <body>
+    <div class="dramatic-mode-overlay" id="overlay"></div>
+
+    <img id="effects-toggle" src="assets/button-images/rui_sound-off.PNG" alt="Переключатель эффектов" title="Включить/выключить спецэффекты">
+
     <h1>выбирашки :)</h1>
 
     <div class="container">
-        <h4 class="subtext">не знаешь, что выбрать? <br> спроси руи, и он без предвзятостей поможет тебе!</h3>
+        <h4 class="subtext">
+        не знаешь, что выбрать? <br>
+        спроси руи, и он по доброте душевной поможет тебе с выбором!
+        </h4>
 
         <div class="input-zone">
-        <input type="text" id="option1" placeholder="вариант 1">
-        <input type="text" id="option2" placeholder="вариант 2">
+        <div class="input-row">
+            <input type="text" id="option1" placeholder="вариант 1">
+            <input type="text" id="option2" placeholder="вариант 2">
+        </div>
         <button id="decide-btn">выбери за меня, руи!</button>
         </div>
 
         <div class="rui-zone">
-            <div class="result-zone">
-                <p id="rui-says"></p>
-            </div>
+        <div class="result-zone">
+            <p id="rui-says"></p>
+        </div>
         <img src="/assets/gifs/idle-speed.gif" alt="чиби руи" id="rui-gif">
         </div>
     </div>
-    <a href="/">лксс</a>
 
+    <a href="/">лксс</a>
     <script src="js/choosy.js"></script>
 </body>
 </html>

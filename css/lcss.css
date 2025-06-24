@@ -1,0 +1,55 @@
+/* lcss.css - СТИЛИ ТОЛЬКО ДЛЯ ГЛАВНОЙ СТРАНИЦЫ */
+
+/* Стили для текстовых полей */
+textarea {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 13px;
+    font-size: 16px;
+    width: 100%; /* Растянем на всю ширину контейнера */
+    max-width: 510px; /* Но не больше этого значения */
+    height: 120px;
+    background: rgba(0, 0, 0, 0.5); 
+    color: white; 
+    font-family: inherit; /* Наследуем шрифт */
+    box-sizing: border-box; /* Чтобы паддинги не ломали ширину */
+}
+
+textarea::placeholder {
+    color: rgba(200, 200, 200, 0.9); 
+}
+
+/* Группа кнопок "вставить, преобразовать, очистить" */
+.button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
+    max-width: 510px;
+    box-sizing: border-box;
+}
+
+/* Растянем кнопки в группе на всю доступную ширину */
+.button-group button {
+    flex-grow: 1;
+}
+
+/* Отдельная кнопка "скопировать" */
+#copyButton {
+    width: 100%;
+    max-width: 510px;
+}
+
+/* Адаптив для мобилок */
+@media screen and (max-width: 540px) {
+    textarea, 
+    .button-group, 
+    #copyButton {
+        max-width: 90vw; /* На маленьких экранах ширина будет 90% */
+    }
+
+    .button-group {
+        flex-direction: column; /* Кнопки в группе встанут в столбик */
+    }
+}
