@@ -1,13 +1,105 @@
-.rui-zone {
-    position: absolute;
-    left: 48%;
+/* choosy.css - СТИЛИ ДЛЯ СТРАНИЦЫ ВЫБОРА */
+
+/* Главный контейнер для всего контента на этой странице */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px; /* Расстояние между элементами */
+    width: 100%;
+    max-width: 600px; /* Ограничиваем максимальную ширину на больших экранах */
+    margin-top: 20px;
 }
+
+/* Зона с полями для ввода */
+.input-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+}
+
+.input-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}
+
+/* Стили для самих полей ввода - ИНПУТОВ */
+input[type="text"] {
+    padding: 15px; /* Увеличим внутренний отступ */
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 13px;
+    font-size: 16px;
+    width: 250px; /* Устанавливаем базовую ширину */
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    text-align: center; /* Текст будет по центру, выглядит прикольнее */
+    font-family: inherit; /* Наследуем шрифт */
+    /* УБРАЛИ жесткую высоту, теперь она зависит от паддинга и шрифта */
+}
+
+input[type="text"]::placeholder {
+    color: rgba(200, 200, 200, 0.9);
+}
+
+/* Кнопка "Выбери за меня" */
+#decide-btn {
+    width: 100%;
+    max-width: 510px; /* Чтобы была примерно как два инпута вместе */
+    padding: 15px;
+    font-weight: bold;
+}
+
+/* Зона с Руи и результатом */
+.rui-zone {
+    margin-top: 1px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+#rui-gif {
+    cursor: pointer;
+    max-width: 500px; /* Ограничим размер, чтобы не был гигантским */
+    margin-top: -105px; 
+}
+
 .result-zone {
-    position: absolute;
-    top: 29%;
-    right: 79%;
-    text-align: right;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-    -webkit-text-stroke:1cap 1px rgba(179, 126, 126, 0.5);
-    color: black;
+    min-height: 50px; /* Резервируем место под текст, чтобы лейаут не прыгал */
+}
+
+#rui-says {
+    font-size: 18px;
+    font-weight: bold;
+    color: rgb(245, 231, 255); /* Белый цвет лучше читается на этом фоне */
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.4); /* Полупрозрачный фон для текста */
+    padding: 10px 20px;
+    border-radius: 12px;
+}
+
+
+/* ===== АДАПТИВЧИК! Самое главное для мобилок ===== */
+/* Все, что будет на экранах шириной 640px и меньше */
+@media screen and (max-width: 640px) {
+    .input-row {
+        flex-direction: column; /* Ставим инпуты друг под друга */
+        align-items: center;
+    }
+
+    input[type="text"] {
+        width: 80vw; /* Ширина инпута - 80% от ширины экрана */
+    }
+    
+    #decide-btn {
+        width: 80vw; /* Кнопка такой же ширины */
+    }
+
+    .subtext {
+        max-width: 90vw; /* Текст не будет вылезать за края */
+    }
 }
