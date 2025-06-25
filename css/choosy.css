@@ -82,6 +82,16 @@ input[type="text"]::placeholder {
     border-radius: 12px;
 }
 
+.dramatic-mode-overlay {
+    position: fixed; /* чтобы он был поверх всего */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* черный, полупрозрачный */
+    z-index: 999; /* чтобы был выше других элементов */
+    display: none; /* по умолчанию скрыт */
+}
 
 /* ===== АДАПТИВЧИК! Самое главное для мобилок ===== */
 /* Все, что будет на экранах шириной 640px и меньше */
