@@ -1,24 +1,17 @@
-/* style.css - ГЛАВНЫЙ ФАЙЛ СТИЛЕЙ */
-
 body {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh; /* Используем min-height вместо height */
+    height: 100vh;
     margin: 0;
-    padding: 20px; /* Добавим отступы для всего контента */
-    box-sizing: border-box; /* Чтобы padding не ломал размеры */
     background-image: url('https://wallpapersok.com/images/hd/cute-aesthetic-pc-purple-clouds-dqnz6v7randcjzeu.jpg');
-    background-attachment: fixed; /* Фон не будет скроллиться вместе с контентом */
+    background-attachment: scroll;
     background-size: cover;
     background-position: center center;
     color: white;
-    overflow-x: hidden; /* Запрещаем горизонтальный скролл */
 }
-
-/* Общие стили для кнопок, заголовков и ссылок */
 button {
     margin: 5px;
     padding: 10px 20px;
@@ -29,29 +22,39 @@ button {
     background-color: #B49FD9;
     color: white;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    font-family: inherit; /* Кнопка наследует шрифт от body */
 }
-
 button:hover {
     background-color: #8F77B5;
     transform: scale(1.05);
 }
-
 button:active {
     transform: scale(0.95);
 }
-
 h1, h4 {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-    text-align: center; /* Центрируем заголовки */
+}
+.button-group, .input-zone {
+    display: flex;
+    gap: 10px;
+    padding: 0 20px;
+    box-sizing: border-box;
+    width: 100%;
+    justify-content: center;
 }
 
-h1 {
-    font-size: clamp(28px, 5vw, 40px); /* Адаптивный размер шрифта */
+#soundControl, #effects-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+    /* width: 30px; */
+    height: 30px;
+    transition: transform 0.3s ease-out;
 }
 
-h4 {
-    font-size: clamp(16px, 3vw, 20px); /* И для подзаголовка тоже */
+html, body {
+    height: 100%;
+    overflow: hidden;
 }
 
 a {
@@ -59,28 +62,7 @@ a {
     text-decoration: none;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
     position: absolute;
-    top: 15px;
-    left: 15px;
-}
-
-/* Кнопка вкл/выкл эффектов */
-#effects-toggle {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    cursor: pointer;
-    width: 30px;
-    height: 30px;
-    transition: transform 0.3s ease-out;
-}
-/* Кнопка вкл/выкл эффектов (теперь работает для обеих страниц) */
-#effects-toggle, #soundControl {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    cursor: pointer;
-    width: 30px;
-    height: 30px;
-    transition: transform 0.3s ease-out;
-    z-index: 10; /* На всякий случай поднимем повыше */
+    top: 0;
+    left: 0;
+    margin: 10px;
 }
