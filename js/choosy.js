@@ -31,7 +31,6 @@ const ruiPhrases = [
 const afkPhrases = [
     "ты еще здесь? я все еще жду!",
     "кажется, я остался совсем один... хех.", // СНОВА ЛОЛ :PPPPPPPP ржу
-    "может, выберем что-нибудь еще?",
     "я не против подождать, но ты ведь скоро вернешься?",
     "еще думаешь? я могу подождать!",
     "я тут, если что! не стесняйся, фуфу~"
@@ -40,19 +39,21 @@ const afkPhrases = [
 let initialPhrase = 'жду твоего сигнала, фуфу~';
 ruiSaysParagraph.textContent = initialPhrase;
 
-
 // --- ШАГ 3: ПЕРЕКЛЮЧАТЕЛЬ ЭФФЕКТОВ ---
 effectsToggleBtn.addEventListener('click', () => {
     fancyEffectsEnabled = !fancyEffectsEnabled;
-
     effectsToggleBtn.src = fancyEffectsEnabled ? imgEffectsOn : imgEffectsOff;
     console.log(`Эффекты ${fancyEffectsEnabled ? 'включены' : 'выключены'}!`);
 
-    if (!fancyEffectsEnabled) {
+    if (fancyEffectsEnabled) {
+        resetAfkTimer();
+    } else {
+        clearTimeout(afkTimer);
         ruiGif.src = gifIdle;
+        // Если хочешь, чтобы при выключении эффектов сбрасывалась фраза — раскомментируй строку ниже:
+        ruiSaysParagraph.textContent = initialPhrase;
     }
 });
-
 
 // --- ШАГ 4: РЕАКЦИЯ НА НАВЕДЕНИЕ ---
 let hoverTimer;
@@ -102,7 +103,6 @@ ruiGif.addEventListener('click', () => {
     }, 1600);
 });
 
-
 // --- ШАГ 5: ВЫБОР ВАРИАНТА ---
 decideBtn.addEventListener('click', () => {
     const choice1 = option1Input.value.trim();
@@ -138,7 +138,6 @@ function makeChoice(choice1, choice2) {
     const phraseTemplate = ruiPhrases[randomPhraseIndex];
     return phraseTemplate.replace('{choice}', chosenOption);
 }
-
 
 // --- ШАГ 6: DRAMATIC EFFECT + Web Audio API ---
 let audioCtx;
@@ -187,22 +186,27 @@ document.body.addEventListener('click', () => {
     }
 }, { once: true });
 
-
 // --- ШАГ 7: АФК-ФРАЗА ---
 let afkTimer;
+
 function resetAfkTimer() {
     clearTimeout(afkTimer);
-    if (fancyEffectsEnabled) {
-        afkTimer = setTimeout(() => {
-            if (ruiSaysParagraph.textContent === initialPhrase) {
-                const randomAfkIndex = Math.floor(Math.random() * afkPhrases.length);
-                ruiSaysParagraph.textContent = afkPhrases[randomAfkIndex];
-            }
-        }, 10000);
-    }
+    afkTimer = setTimeout(() => {
+        if (ruiSaysParagraph.textContent === initialPhrase) {
+            const randomAfkIndex = Math.floor(Math.random() * afkPhrases.length);
+            ruiSaysParagraph.textContent = afkPhrases[randomAfkIndex];
+        }
+    }, 10000);
 }
 
-window.addEventListener('mousemove', resetAfkTimer);
-window.addEventListener('mousedown', resetAfkTimer);
-window.addEventListener('keydown', resetAfkTimer);
+window.addEventListener('mousemove', () => {
+    if (fancyEffectsEnabled) resetAfkTimer();
+});
+window.addEventListener('mousedown', () => {
+    if (fancyEffectsEnabled) resetAfkTimer();
+});
+window.addEventListener('keydown', () => {
+    if (fancyEffectsEnabled) resetAfkTimer();
+});
+
 resetAfkTimer();
