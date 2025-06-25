@@ -5,74 +5,86 @@ const convertButton = document.getElementById('convertButton');
 const copyButton = document.getElementById('copyButton');
 const clearButton = document.getElementById('clearButton');
 const pasteButton = document.getElementById('pasteButton');
-const soundButton = document.getElementById('soundControl'); // Используем одно имя для кнопки звука
-const secretSound = document.getElementById('secretSound');
+const soundButton = document.getElementById('soundControl');
+const secretSoundElement = document.getElementById('secretSound'); // Переименовал для ясности
 
 // --- Переменные состояния ---
 let hoverTimeout;
-let audioUnlocked = false;
 let clickCount = 0;
 let firstClickTime = null;
 let capsMode = false;
+let isSoundEnabled = false; // Главный рубильник для всех пасхалок
 
-// Объединяем все в одну переменную состояния для звука
-// true = звук включен, иконка on, кнопка убегает
-// false = звук выключен, иконка off, кнопка стоит на месте
-let isSoundEnabled = false; // По умолчанию звук выключен
+// --- НОВАЯ СИСТЕМА АУДИО (Web Audio API) ---
+// Она позволит играть звук поверх музыки, не прерывая её.
+let audioContext;
+let secretSoundBuffer;
+let audioUnlocked = false;
 
+// Функция для подготовки аудиосистемы. Сработает 1 раз при первом клике.
+function initAudio() {
+    if (audioUnlocked) return;
+
+    try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        fetch('assets/sound/rui-laugh.wav') // ← всё, чёткий путь, не нужен HTML-аудио
+            .then(response => response.arrayBuffer())
+            .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+            .then(decodedBuffer => {
+                secretSoundBuffer = decodedBuffer;
+                audioUnlocked = true;
+                console.log('Хихишка успешно загружена и готова к бою!');
+            })
+            .catch(err => console.error('Не удалось загрузить хихишку:', err));
+    } catch (e) {
+        console.error('Web Audio API не поддерживается этим браузером.', e);
+    }
+}
+
+// Запускаем подготовку аудио по первому клику на странице
+document.body.addEventListener('click', initAudio, { once: true });
+
+
+// НОВАЯ функция проигрывания звука
+function playSecretSound() {
+    // Играем, только если аудио готово, буфер есть и пасхалки ВКЛЮЧЕНЫ
+    if (audioUnlocked && secretSoundBuffer && isSoundEnabled) {
+        const source = audioContext.createBufferSource(); // Создаем новый источник звука
+        source.buffer = secretSoundBuffer;                // Подключаем наш звук
+        source.connect(audioContext.destination);         // Направляем на колонки
+        source.start(0);                                  // Плей!
+    }
+}
+
+// --- ФУНКЦИИ-ПОМОЩНИКИ ---
 function isTouchDevice() {
     return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 }
 
-// --- Логика разблокировки аудио (НОВАЯ, ТИХАЯ ВЕРСИЯ) ---
-document.body.addEventListener('click', () => {
-    if (!audioUnlocked) {
-        // ВРЕМЕННО мьютим звук перед "техническим" проигрыванием
-        secretSound.muted = true; 
-        
-        secretSound.play().then(() => {
-            secretSound.pause();
-            secretSound.currentTime = 0;
-            audioUnlocked = true;
-            
-            // Теперь, когда аудио разблокировано, возвращаем настройку звука к той,
-            // которую выбрал пользователь (т.е. к состоянию нашей кнопки)
-            secretSound.muted = !isSoundEnabled; 
 
-        }).catch(() => {
-            // Если что-то пошло не так, все равно вернем мьют в норму
-            secretSound.muted = !isSoundEnabled;
-        });
+// --- ФУНКЦИОНАЛ ОСНОВНЫХ КНОПОК ---
+
+pasteButton.addEventListener('click', () => {
+    if (!navigator.clipboard || !navigator.clipboard.readText) {
+        alert('Вставить не получится. Браузер не поддерживает эту фичу или сайт открыт не по HTTPS.');
+        return;
     }
-}, { once: true });
-
-function playSecretSound() {
-    if (audioUnlocked) {
-        secretSound.currentTime = 0; // Сбрасываем звук, чтобы он играл с начала
-        secretSound.play().catch(err => console.log('Ошибка воспроизведения:', err));
-    }
-}
-
-// --- Функционал основных кнопок ---
-
-// Вставка текста
-pasteButton.addEventListener('click', async () => {
-    try {
-        const clipboardText = await navigator.clipboard.readText();
+    navigator.clipboard.readText().then(clipboardText => {
         inputText.value = clipboardText;
-    } catch (err) {
+    }).catch(err => {
         console.error('Не удалось вставить текст:', err);
-    }
+        alert('Не получилось вставить текст. Возможно, нужно дать разрешение.');
+    });
 });
 
-// Очистка полей
 clearButton.addEventListener('click', () => {
     inputText.value = '';
     outputText.value = '';
 });
 
-// Копирование результата
 copyButton.addEventListener('click', () => {
+    if (!outputText.value) return;
     outputText.select();
     document.execCommand('copy');
     copyButton.textContent = 'скопировано!';
@@ -81,80 +93,79 @@ copyButton.addEventListener('click', () => {
     }, 3000);
 });
 
-// --- ЕДИНЫЙ обработчик для кнопки "преобразовать" (с пасхалкой) ---
+
+// --- ОБРАБОТЧИК КНОПКИ "ПРЕОБРАЗОВАТЬ" (с УСЛОВНОЙ пасхалкой) ---
 convertButton.addEventListener('click', () => {
-    const now = Date.now();
-
-    // Логика для пасхалки с 5 кликами
-    if (firstClickTime === null) {
-        firstClickTime = now;
+    // FIX 1: Пасхалка с капсом работает ТОЛЬКО когда включен главный рубильник
+    if (isSoundEnabled) {
+        // Логика переключения: 1 клик на ВЫКЛ, 5 на ВКЛ
+        if (capsMode) {
+            capsMode = false;
+            clickCount = 0;
+            firstClickTime = null;
+        } else {
+            const now = Date.now();
+            if (firstClickTime === null) firstClickTime = now;
+            if (now - firstClickTime > 6000) {
+                clickCount = 0;
+                firstClickTime = now;
+            }
+            clickCount++;
+            if (clickCount >= 5) {
+                capsMode = true;
+                clickCount = 0;
+                firstClickTime = null;
+            }
+        }
+    } else {
+        // Если пасхалки выключены, убеждаемся, что капс тоже выключен
+        capsMode = false;
     }
 
-    if (now - firstClickTime > 6000) {
-        clickCount = 0;
-        firstClickTime = now;
-    }
-    
-    clickCount++;
-
-    // Переключаем режим CAPS
-    if (clickCount >= 5 && !capsMode) {
-        capsMode = true;
-        convertButton.textContent = "ПРЕОБРАЗОВАТЬ";
-        convertButton.classList.add("secret-active");
-    }
-
-    // Применяем преобразование в зависимости от режима
+    // Применяем преобразование в зависимости от итогового состояния
     if (capsMode) {
         outputText.value = inputText.value.toUpperCase();
+        convertButton.textContent = "ПРЕОБРАЗОВАТЬ";
+        convertButton.classList.add("secret-active");
     } else {
         outputText.value = inputText.value.toLowerCase();
+        convertButton.textContent = "преобразовать";
+        convertButton.classList.remove("secret-active");
     }
 });
 
-// --- Пасхалка со звуком и цветом (удержание/наведение) ---
 
+// --- ПАСХАЛКА СО ЗВУКОМ И ЦВЕТОМ (удержание/наведение) ---
+// (Тут уже всё было хорошо, просто вызываем новую функцию звука)
 const activateSecretEffect = () => {
-    if (isSoundEnabled) { 
-        playSecretSound();
+    if (isSoundEnabled) {
+        playSecretSound(); // Используем новую функцию
+        convertButton.classList.add('secret-active');
     }
-    convertButton.classList.add('secret-active');
 };
 
 const deactivateSecretEffect = () => {
     clearTimeout(hoverTimeout);
-    convertButton.classList.remove('secret-active');
+    if (!capsMode) {
+        convertButton.classList.remove('secret-active');
+    }
 };
 
-// Проверяем, с какого устройства зашли
 if (isTouchDevice()) {
-    // ЛОГИКА ДЛЯ ТЕЛЕФОНОВ (долгое нажатие)
-    convertButton.addEventListener('touchstart', (e) => {
-        // e.preventDefault(); // Можно раскомментить, если будут странные баги с двойным срабатыванием
-        hoverTimeout = setTimeout(activateSecretEffect, 3000); // Для телефонов можно и побыстрее, 3 сек
-    }, { passive: true });
-
+    convertButton.addEventListener('touchstart', () => { hoverTimeout = setTimeout(activateSecretEffect, 1000); }, { passive: true });
     convertButton.addEventListener('touchend', deactivateSecretEffect);
-    convertButton.addEventListener('touchcancel', deactivateSecretEffect); // На случай, если палец уехал за пределы экрана
-
+    convertButton.addEventListener('touchcancel', deactivateSecretEffect);
 } else {
-    // ЛОГИКА ДЛЯ КОМПОВ (наведение мышкой)
-    convertButton.addEventListener('mouseover', () => {
-        hoverTimeout = setTimeout(activateSecretEffect, 5000);
-    });
-
+    convertButton.addEventListener('mouseover', () => { hoverTimeout = setTimeout(activateSecretEffect, 3000); });
     convertButton.addEventListener('mouseout', deactivateSecretEffect);
 }
 
-// --- Логика "убегающей" кнопки ---
+
+// --- ЛОГИКА "УБЕГАЮЩЕЙ" КНОПКИ ---
+// (Тут всё работает от переменной isSoundEnabled, так что трогать не надо)
 function addMovingEffect(button) {
     document.addEventListener('mousemove', (event) => {
-        // Проверяем то же самое единое состояние звука
-        if (!isSoundEnabled) {
-            button.style.transform = 'translate(0, 0)'; // Если убегание выключено, возвращаем кнопку на место
-            return;
-        }
-
+        if (!isSoundEnabled) { button.style.transform = 'translate(0, 0)'; return; }
         const rect = button.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
@@ -162,7 +173,6 @@ function addMovingEffect(button) {
         const offsetY = event.clientY - centerY;
         const distance = Math.sqrt(offsetX ** 2 + offsetY ** 2);
         const maxDistance = 55;
-
         if (distance < maxDistance) {
             const moveFactor = (maxDistance - distance) / maxDistance;
             const moveX = offsetX * -1.2 * moveFactor;
@@ -172,30 +182,28 @@ function addMovingEffect(button) {
             button.style.transform = 'translate(0, 0)';
         }
     });
-
-    document.addEventListener('mouseleave', () => {
-        if (isSoundEnabled) {
-                button.style.transform = 'translate(0, 0)';
-        }
-    });
+    document.addEventListener('mouseleave', () => { if (isSoundEnabled) { button.style.transform = 'translate(0, 0)'; } });
 }
+addMovingEffect(soundButton);
 
-addMovingEffect(soundButton); // Применяем эффект к нашей кнопке звука
 
-
-// --- ЕДИНЫЙ обработчик для кнопки звука ---
+// --- ОБРАБОТЧИК ДЛЯ ГЛАВНОЙ КНОПКИ ПАСХАЛОК ---
 soundButton.addEventListener('click', () => {
-    // Просто переключаем наше единственное состояние
+    // Включаем/выключаем наш главный рубильник
     isSoundEnabled = !isSoundEnabled;
 
-    // Обновляем всё в зависимости от этого состояния
+    // Меняем иконку
     if (isSoundEnabled) {
         soundButton.src = 'assets/button-images/rui_sound-on.PNG';
-        secretSound.muted = false;
-        // Эффект "убегания" начнет работать автоматически, т.к. он проверяет isSoundEnabled
+        // Если контекст еще не создан (юзер не кликал ни разу), пробуем создать его сейчас
+        if (!audioContext) {
+            initAudio();
+        }
+        // Разбудим контекст, если он уснул (некоторые браузеры так делают)
+        if (audioContext && audioContext.state === 'suspended') {
+            audioContext.resume();
+        }
     } else {
         soundButton.src = 'assets/button-images/rui_sound-off.PNG';
-        secretSound.muted = true;
-        // Эффект "убегания" перестанет работать, и кнопка вернется на место
     }
 });
