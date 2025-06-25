@@ -12,12 +12,22 @@ const effectsToggleBtn = document.getElementById('effects-toggle');
 // --- ШАГ 2: ПЕРЕМЕННЫЕ ---
 let fancyEffectsEnabled = false;
 
-const gifIdle = '/assets/gifs/idle-speed.gif';
-const gifSurprise = '/assets/gifs/surprise-speed.gif';
-const gifLaugh = '/assets/gifs/laugh-speed.gif';
-const gifThinking = '/assets/gifs/thinking-speed.gif';
-const imgEffectsOn = 'assets/button-images/rui_sound-on.PNG';
-const imgEffectsOff = 'assets/button-images/rui_sound-off.PNG';
+// Изменяем пути для GIF-ок
+// Они находятся в assets/gifs/, а этот JS-файл в choosy/js/.
+// Нужно выйти из js/ (..), потом из choosy/ (..) и зайти в assets/gifs/.
+const gifIdle = '../../assets/gifs/idle-speed.gif';
+const gifSurprise = '../../assets/gifs/surprise-speed.gif';
+const gifLaugh = '../../assets/gifs/laugh-speed.gif';
+const gifThinking = '../../assets/gifs/thinking-speed.gif';
+
+// Изменяем пути для картинок кнопок
+// rui_sound-on.PNG и rui_sound-off.PNG находятся в assets/button-images/.
+// Тоже нужно выйти из js/ (..), потом из choosy/ (..) и зайти в assets/button-images/.
+// Внимание: у тебя в оригинале было 'assets/button-images/rui_sound-on.PNG',
+// что было бы правильно, если бы JS-файл был в корне. Но так как он в choosy/js/,
+// нужно добавить '../../'.
+const imgEffectsOn = '../../assets/button-images/rui_sound-on.PNG';
+const imgEffectsOff = '../../assets/button-images/rui_sound-off.PNG';
 
 const ruiPhrases = [
     "хммм… будь я на твоем месте, я бы выбрал «{choice}».",
@@ -51,7 +61,7 @@ effectsToggleBtn.addEventListener('click', () => {
         clearTimeout(afkTimer);
         ruiGif.src = gifIdle;
         // Если хочешь, чтобы при выключении эффектов сбрасывалась фраза — раскомментируй строку ниже:
-        ruiSaysParagraph.textContent = initialPhrase;
+        // ruiSaysParagraph.textContent = initialPhrase;
     }
 });
 
@@ -147,7 +157,10 @@ async function initDrumSound() {
     try {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-        const response = await fetch('/assets/sound/drums.mp3');
+        // Изменяем путь для drums.mp3
+        // Он находится в assets/sound/, а этот JS-файл в choosy/js/.
+        // Нужно выйти из js/ (..), потом из choosy/ (..) и зайти в assets/sound/.
+        const response = await fetch('../../assets/sound/drums.mp3');
         const arrayBuffer = await response.arrayBuffer();
         drumBuffer = await audioCtx.decodeAudioData(arrayBuffer);
 
