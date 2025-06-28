@@ -51,9 +51,9 @@ function playSecretSound() {
     // Играем, только если аудио готово, буфер есть и пасхалки ВКЛЮЧЕНЫ
     if (audioUnlocked && secretSoundBuffer && isSoundEnabled) {
         const source = audioContext.createBufferSource(); // Создаем новый источник звука
-        source.buffer = secretSoundBuffer;                // Подключаем наш звук
-        source.connect(audioContext.destination);         // Направляем на колонки
-        source.start(0);                                  // Плей!
+        source.buffer = secretSoundBuffer;              // Подключаем наш звук
+        source.connect(audioContext.destination);      // Направляем на колонки
+        source.start(0);                                 // Плей!
     }
 }
 
@@ -101,6 +101,8 @@ convertButton.addEventListener('click', () => {
         // Логика переключения: 1 клик на ВЫКЛ, 5 на ВКЛ
         if (capsMode) {
             capsMode = false;
+            // ВОТ ОН, ФИКС! Немедленно отменяем любой запланированный ховер-эффект
+            deactivateSecretEffect(); 
             clickCount = 0;
             firstClickTime = null;
         } else {
