@@ -5,8 +5,11 @@ body {
     align-items: center;
     justify-content: center;
     height: 100vh;
+    height: 100dvh; /* ровно высота экрана телефона (с учётом адресной строки) */
     margin: 0;
-    background-image: url('https://wallpapersok.com/images/hd/cute-aesthetic-pc-purple-clouds-dqnz6v7randcjzeu.jpg');
+    box-sizing: border-box;
+    padding: 16px;
+    background-image: url('../assets/images/background.jpg');
     background-attachment: scroll;
     background-size: cover;
     background-position: center center;
@@ -35,8 +38,8 @@ h1, h4 {
 }
 .button-group, .input-zone {
     display: flex;
+    flex-wrap: wrap;            /* кнопки переносятся, а не обрезаются */
     gap: 10px;
-    padding: 0 20px;
     box-sizing: border-box;
     width: 100%;
     justify-content: center;
@@ -52,8 +55,11 @@ h1, h4 {
     transition: transform 0.3s ease-out;
 }
 
-html, body {
+html {
     height: 100%;
+}
+/* Фиксированный экран: контент всегда вмещается, страница не скроллится */
+body {
     overflow: hidden;
 }
 
@@ -65,4 +71,25 @@ a {
     top: 0;
     left: 0;
     margin: 10px;
+}
+
+/* ===== МОБИЛКИ: всё должно влезать в экран без скролла ===== */
+@media (max-width: 640px) {
+    body {
+        padding: 12px;
+        gap: 4px;
+    }
+    h1 {
+        font-size: 1.5em;
+        margin: 8px 0;
+    }
+    /* кнопки компактнее, чтобы три влезали в ряд и не обрезались */
+    button {
+        font-size: 14px;
+        padding: 8px 12px;
+        margin: 4px;
+    }
+    .button-group {
+        gap: 6px;
+    }
 }

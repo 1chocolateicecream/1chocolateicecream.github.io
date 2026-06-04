@@ -83,13 +83,18 @@ clearButton.addEventListener('click', () => {
     outputText.value = '';
 });
 
-copyButton.addEventListener('click', () => {
+copyButton.addEventListener('click', async () => {
     if (!outputText.value) return;
-    outputText.select();
-    document.execCommand('copy');
+    try {
+        await navigator.clipboard.writeText(outputText.value);
+    } catch (err) {
+        // Запасной путь для старых браузеров / не-HTTPS
+        outputText.select();
+        document.execCommand('copy');
+    }
     copyButton.textContent = 'скопировано!';
     setTimeout(() => {
-        copyButton.textContent = 'копировать';
+        copyButton.textContent = 'скопировать';
     }, 3000);
 });
 
@@ -193,6 +198,7 @@ addMovingEffect(soundButton);
 soundButton.addEventListener('click', () => {
     // Включаем/выключаем наш главный рубильник
     isSoundEnabled = !isSoundEnabled;
+    soundButton.setAttribute('aria-pressed', String(isSoundEnabled));
 
     // Меняем иконку
     if (isSoundEnabled) {
@@ -207,5 +213,13 @@ soundButton.addEventListener('click', () => {
         }
     } else {
         soundButton.src = 'assets/button-images/rui_sound-off.PNG';
+    }
+});
+
+// Клавиатурная активация иконки (Enter / Пробел)
+soundButton.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        soundButton.click();
     }
 });

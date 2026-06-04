@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LCSS</title>
-    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/lcss.css">
+    <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css?v=3">
+    <link rel="stylesheet" href="css/lcss.css?v=3">
 </head>
 <body>
-    <h1>↓ case safe space</h1>
+    <h1>↓ case</h1>
     <textarea id="inputText" placeholder="введите текст..."></textarea>
     <div class="button-group">
         <button id="pasteButton">вставить</button>
@@ -19,10 +19,11 @@
     <textarea id="outputText" readonly placeholder="результат появится здесь"></textarea>
     <button id="copyButton">скопировать</button>
 
-    <img id="soundControl" src="assets/button-images/rui_sound-off.PNG" alt="Easter Eggs Control" />
+    <img id="soundControl" src="assets/button-images/rui_sound-off.PNG"
+        alt="Переключить пасхалки" role="button" tabindex="0" aria-pressed="false" />
     
     <a href="/choosy">выбирашки...</a>
 
-    <script src="js/main.js"></script>
+    <script src="js/main.js?v=3"></script>
 </body>
 </html>

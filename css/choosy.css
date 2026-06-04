@@ -62,10 +62,13 @@ input[type="text"]::placeholder {
     gap: 2px;
 }
 
+/* Гифки Руи уже плотно обрезаны в самих файлах (146x219) — просто масштабируем */
 #rui-gif {
+    display: block;
     cursor: pointer;
-    max-width: 500px; /* Ограничим размер, чтобы не был гигантским */
-    margin-top: -105px; 
+    width: 170px;
+    height: auto;
+    margin-top: 4px;
 }
 
 .result-zone {
@@ -73,6 +76,7 @@ input[type="text"]::placeholder {
 }
 
 #rui-says {
+    margin: 0; /* убираем дефолтные отступы <p>, иначе баббл отлетает от Руи */
     font-size: 18px;
     font-weight: bold;
     color: rgb(245, 231, 255); /* Белый цвет лучше читается на этом фоне */
@@ -103,6 +107,22 @@ input[type="text"]::placeholder {
 /* ===== АДАПТИВЧИК! Самое главное для мобилок ===== */
 /* Все, что будет на экранах шириной 640px и меньше */
 @media screen and (max-width: 640px) {
+    /* Сдвиг всего контента чуть ниже центра — только на выбирашке.
+       (В общий style.css не выносим, чтобы ЛКСС оставался отцентрованным.) */
+    body {
+        padding-top: calc(12px + 13vh);
+    }
+
+    .container {
+        margin-top: 0;
+        gap: 12px;          /* плотнее, чтобы всё влезло в экран */
+    }
+
+    /* Реплика Руи — это его «манга-баббл»: держим вплотную к гифке */
+    .result-zone {
+        min-height: 0;
+    }
+
     .input-row {
         flex-direction: column; /* Ставим инпуты друг под друга */
         align-items: center;
@@ -111,12 +131,38 @@ input[type="text"]::placeholder {
     input[type="text"] {
         width: 80vw; /* Ширина инпута - 80% от ширины экрана */
     }
-    
+
     #decide-btn {
         width: 80vw; /* Кнопка такой же ширины */
     }
 
     .subtext {
-        max-width: 90vw; /* Текст не будет вылезать за края */
+        max-width: 85vw;     /* Текст не вылезает за края */
+        text-align: center;  /* и красиво по центру */
+        font-size: 14px;
+        line-height: 1.4;
+        margin: 0;
+    }
+
+    .rui-zone {
+        gap: 6px;   /* баббл сидит прямо над головой Руи, как в манге */
+    }
+
+    /* Блок реплики Руи не должен упираться в край экрана */
+    #rui-says {
+        max-width: 85vw;
+        text-align: center;
+        font-size: 16px;
+    }
+
+    /* На телефоне Руи меньше и с подрезанным пустым верхом над головой.
+       object-fit: cover + object-position: bottom прячут верхнюю пустоту,
+       оставляя ноги; surprise (где он выше) почти не задевается. */
+    #rui-gif {
+        width: 27vw;           /* меньше: акцент на выбирашке, а не на Руи */
+        height: 40vw;          /* почти натуральная высота (запас под испуг сверху) */
+        object-fit: cover;
+        object-position: bottom;
+        margin-top: 2px;
     }
 }
